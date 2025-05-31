@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'app.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(); 
+  await dotenv.load(fileName: 'assets/.env');
 
   await Firebase.initializeApp(
     options: FirebaseOptions(
@@ -17,38 +19,4 @@ void main() async {
   );
 
   runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Minha Livraria',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
-      home: const HomeScreen(),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Livraria'),
-      ),
-      body: const Center(
-        child: Text(
-          'Bem-vindo à Livraria!',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
-    );
-  }
 }
