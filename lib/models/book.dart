@@ -68,4 +68,28 @@ class Book {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'key': key,
+      'title': title,
+      'author': author,
+      'coverId': coverId,
+      'description': description,
+      'price': price,
+    };
+  }
+
+  factory Book.fromMap(Map<String, dynamic> map) {
+    return Book(
+      key: map['key'],
+      title: map['title'],
+      author: map['author'],
+      coverId: map['coverId'],
+      description: map['description'],
+      price: (map['price'] is int)
+          ? (map['price'] as int).toDouble()
+          : map['price'] ?? 0.0,
+    );
+  }
+
 }

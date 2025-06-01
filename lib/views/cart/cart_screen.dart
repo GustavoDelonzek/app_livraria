@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../models/book.dart';
+import 'package:app_livraria/models/cart_item.dart';
 import 'cart_view_model.dart';
 
 class CartScreen extends StatelessWidget {
@@ -8,60 +8,104 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<CartViewModel>();
+    final cartVM = context.watch<CartViewModel>(); // Reutiliza a instância global
+
+    if (cartVM.isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (cartVM.items.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Carrinho')),
+        body: const Center(child: Text('Seu carrinho está vazio.')),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Carrinho')),
-      body: vm.items.isEmpty
-          ? const Center(child: Text('Seu carrinho está vazio'))
-          : Column(
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: cartVM.items.length,
+              itemBuilder: (context, index) {
+                final item = cartVM.items[index];
+                final book = item.book;
+
+                return ListTile(
+                  leading: Image.network(
+                    book.coverUrl,
+                    width: 50,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const Icon(Icons.book, size: 40),
+                  ),
+                  title: Text(book.title, overflow: TextOverflow.ellipsis),
+                  subtitle: Text('Autor: ${book.author}', overflow: TextOverflow.ellipsis),
+                  trailing: SizedBox(
+                    width: 150,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          iconSize: 20,
+                          icon: const Icon(Icons.remove_circle_outline),
+                          onPressed: () {
+                            final newQty = item.quantity - 1;
+                            cartVM.updateQuantity(book.key!, newQty);
+                          },
+                        ),
+                        Flexible(
+                          child: Text('${item.quantity}',
+                              style: const TextStyle(fontSize: 16),
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center),
+                        ),
+                        IconButton(
+                          iconSize: 20,
+                          icon: const Icon(Icons.add_circle_outline),
+                          onPressed: () {
+                            final newQty = item.quantity + 1;
+                            cartVM.updateQuantity(book.key!, newQty);
+                          },
+                        ),
+                        IconButton(
+                          iconSize: 20,
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            cartVM.removeFromCart(book.key!);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: vm.items.length,
-                    itemBuilder: (_, index) {
-                      final book = vm.items[index];
-                      return ListTile(
-                        leading: Image.network(
-                          book.coverUrl,
-                          width: 40,
-                          errorBuilder: (_, __, ___) => const Icon(Icons.book),
-                        ),
-                        title: Text(book.title),
-                        subtitle: Text('R\$ ${book.price.toStringAsFixed(2)}'),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () => vm.removeFromCart(book),
-                        ),
-                      );
-                    },
-                  ),
+                Text(
+                  'Total: R\$ ${cartVM.totalPrice.toStringAsFixed(2)}',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Total: R\$ ${vm.total.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Aqui pode ir lógica de finalizar compra
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Compra finalizada!')),
-                          );
-                          vm.clearCart();
-                        },
-                        child: const Text('Finalizar Compra'),
-                      ),
-                    ],
-                  ),
+                ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Função de compra ainda não implementada.')),
+                    );
+                  },
+                  child: const Text('Finalizar Compra'),
                 ),
               ],
             ),
+          ),
+        ],
+      ),
     );
   }
 }

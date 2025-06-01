@@ -12,7 +12,7 @@ class BookDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartViewModel = context.watch<CartViewModel>();
-    final alreadyInCart = cartViewModel.items.contains(book);
+    final alreadyInCart = cartViewModel.isInCart(book.key);
 
     return Scaffold(
       appBar: AppBar(
