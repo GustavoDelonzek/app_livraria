@@ -19,12 +19,18 @@ class HomeScreen extends StatelessWidget {
 
           return Scaffold(
             appBar: AppBar(
-            title: const Text('Livraria'),
-            actions: [
+              title: const Text('Livraria'),
+              actions: [
                 IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () {
                     Navigator.pushNamed(context, '/search');
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.shopping_cart),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/cart');
                   },
                 ),
               ],
