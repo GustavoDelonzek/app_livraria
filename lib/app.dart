@@ -1,5 +1,7 @@
 import 'package:app_livraria/core/widgets/auth_guard.dart';
 import 'package:app_livraria/providers/book_provider.dart';
+import 'package:app_livraria/providers/search_provider.dart';
+import 'package:app_livraria/views/search/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'views/login/login_screen.dart';
 import 'views/login/login_view_model.dart';
@@ -20,6 +22,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RegisterViewModel()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => BookProvider()),
+        ChangeNotifierProvider(create: (_) => SearchProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -32,6 +35,7 @@ class MainApp extends StatelessWidget {
           '/login': (_) => const LoginScreen(),
           '/register': (_) => const RegisterScreen(),
           '/home': (_) => const AuthGuard(child: HomeScreen()),
+          '/search': (_) => const AuthGuard(child: SearchScreen()),
         },
       ),
     );

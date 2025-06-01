@@ -28,7 +28,8 @@ class BookCard extends StatelessWidget {
         width: 140,
         margin: const EdgeInsets.only(right: 12),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.network(
               book.coverUrl,

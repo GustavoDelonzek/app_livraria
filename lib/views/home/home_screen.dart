@@ -19,13 +19,12 @@ class HomeScreen extends StatelessWidget {
 
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Bem-vindo à Livraria'),
-              actions: [
+            title: const Text('Livraria'),
+            actions: [
                 IconButton(
-                  icon: const Icon(Icons.logout),
-                  onPressed: () async {
-                    await homeViewModel.signOut();
-                    Navigator.pushReplacementNamed(context, '/login');
+                  icon: const Icon(Icons.search),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/search');
                   },
                 ),
               ],

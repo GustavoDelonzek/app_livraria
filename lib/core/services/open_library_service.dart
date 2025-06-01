@@ -5,14 +5,13 @@ import '../../../models/book.dart';
 
 class OpenLibraryService {
 
-  Future<List<Book>> searchBooks(String query) async {
-    final url = Uri.parse('https://openlibrary.org/search.json?q=$query');
+  Future<List<Book>> fetchBooks(String query, {int page = 1}) async {
+    final url = Uri.parse('https://openlibrary.org/search.json?q=$query&page=$page');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      final data = json.decode(response.body);
       final List docs = data['docs'];
-
       return docs.map((json) => Book.fromJson(json)).toList();
     } else {
       throw Exception('Erro ao buscar livros');
