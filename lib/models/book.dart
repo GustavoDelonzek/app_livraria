@@ -4,6 +4,7 @@ class Book {
   final String author;
   final int? coverId;
   final String? description;
+  final double price;
 
   Book({
     required this.title,
@@ -11,9 +12,14 @@ class Book {
     this.coverId,
     this.description,
     required this.key,
+    required this.price,
   });
 
   factory Book.fromJson(Map<String, dynamic> json) {
+    final key = json['key'] ?? '';
+
+    final randomPrice = 19.9 + (60 * (key.hashCode % 1000) / 1000);
+
     return Book(
       key: json['key'],
       title: json['title'] ?? 'Sem título',
@@ -22,20 +28,27 @@ class Book {
           : 'Autor desconhecido',
       coverId: json['cover_i'],
       description: json['description'],
+      price: double.parse(randomPrice.toStringAsFixed(2)),
     );
   }
 
   factory Book.fromSubjectJson(Map<String, dynamic> json) {
-    return Book(
-      key: json['key'],
-      title: json['title'] ?? 'Sem título',
-      author: (json['authors'] != null && (json['authors'] as List).isNotEmpty)
-          ? json['authors'][0]['name']
-          : 'Autor desconhecido',
-      coverId: json['cover_id'],
-      description: json['description'],
-    );
-  }
+      final key = json['key'] ?? '';
+      
+      final randomPrice = 19.9 + (60 * (key.hashCode % 1000) / 1000);
+
+      return Book(
+        key: key,
+        title: json['title'] ?? 'Sem título',
+        author: (json['authors'] != null && (json['authors'] as List).isNotEmpty)
+            ? json['authors'][0]['name']
+            : 'Autor desconhecido',
+        coverId: json['cover_id'],
+        description: json['description'],
+        price: double.parse(randomPrice.toStringAsFixed(2)), 
+      );
+    }
+
 
   String get coverUrl {
     if (coverId != null) {
@@ -51,6 +64,7 @@ class Book {
       author: author,
       coverId: coverId,
       description: description ?? this.description,
+      price: price,
     );
   }
 

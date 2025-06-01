@@ -30,7 +30,7 @@ class BookSection extends StatelessWidget {
             Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             SizedBox(
-              height: 250,
+              height: 340,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: provider.books.length,
