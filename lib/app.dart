@@ -1,4 +1,5 @@
 import 'package:app_livraria/core/widgets/auth_guard.dart';
+import 'package:app_livraria/providers/book_provider.dart';
 import 'package:flutter/material.dart';
 import 'views/login/login_screen.dart';
 import 'views/login/login_view_model.dart';
@@ -18,6 +19,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_) => RegisterViewModel()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => BookProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
