@@ -1,3 +1,4 @@
+import 'package:app_livraria/core/widgets/app_header.dart';
 import 'package:app_livraria/core/widgets/footer.dart';
 import 'package:app_livraria/views/search/search_model_view.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class SearchScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => SearchViewModel(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Buscar Livros')),
+        appBar: AppHeader(title: 'Busca', showBack: true),
         body: const SearchContent(),
       ),
     );
@@ -51,16 +52,42 @@ class _SearchContentState extends State<SearchContent> {
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(12),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
           child: TextField(
             controller: _controller,
             decoration: InputDecoration(
-              hintText: 'Buscar por título, autor ou ISBN',
-              border: const OutlineInputBorder(),
+              hintText: 'Buscar por título, autor ou ISBN...',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: _controller.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _controller.clear();
+                      },
+                    )
+                  : null,
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
         ),
+        const SizedBox(height: 12),
         if (vm.books.isEmpty && !vm.isLoading)
           const Padding(
             padding: EdgeInsets.all(16),
@@ -73,20 +100,20 @@ class _SearchContentState extends State<SearchContent> {
           child: vm.isLoading && vm.books.isEmpty
               ? const Center(child: CircularProgressIndicator())
               : GridView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   itemCount: vm.books.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 0.6,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 0.65,
                   ),
                   itemBuilder: (_, index) {
                     return BookCard(book: vm.books[index]);
                   },
                 ),
         ),
-        const AppFooter(), 
+        const AppFooter(),
       ],
     );
   }

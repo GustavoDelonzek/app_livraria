@@ -1,3 +1,4 @@
+import 'package:app_livraria/core/widgets/app_header.dart';
 import 'package:app_livraria/core/widgets/book_section.dart';
 import 'package:app_livraria/core/widgets/footer.dart';
 import 'package:flutter/material.dart';
@@ -18,23 +19,13 @@ class HomeScreen extends StatelessWidget {
           final user = homeViewModel.currentUser;
 
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('Livraria'),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/search');
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.shopping_cart),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/cart');
-                  },
-                ),
-              ],
-            ),
+            appBar: AppHeader(
+                title: 'Livraria',
+                showCart: true,
+                onSearch: () {
+                  Navigator.pushNamed(context, '/search');
+                },
+              ),
             body: Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(

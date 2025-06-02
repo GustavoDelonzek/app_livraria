@@ -1,3 +1,4 @@
+import 'package:app_livraria/core/widgets/app_header.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app_livraria/models/cart_item.dart';
@@ -24,7 +25,7 @@ class CartScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Carrinho')),
+      appBar:AppHeader(title: 'Carrinho', showBack: true),
       body: Column(
         children: [
           Expanded(
