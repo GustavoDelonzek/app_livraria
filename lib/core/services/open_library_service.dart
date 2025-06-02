@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app_livraria/models/author.dart';
 import 'package:app_livraria/models/book.dart';
 import 'package:http/http.dart' as http;
 import '../../../models/book.dart';
@@ -50,4 +51,5 @@ class OpenLibraryService {
 
     return 'Descrição não disponível.';
   }
+
 }

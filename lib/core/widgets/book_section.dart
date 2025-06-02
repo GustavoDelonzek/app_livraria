@@ -1,8 +1,7 @@
+import 'package:app_livraria/core/widgets/book_card.dart';
 import 'package:app_livraria/providers/book_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'book_card.dart';
-
 
 class BookSection extends StatelessWidget {
   final String title;
@@ -20,30 +19,35 @@ class BookSection extends StatelessWidget {
         if (provider.books.isEmpty) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text('Nenhum livro encontrado para $title.'),
+            child: Text('Nenhum livro encontrado para "$title".'),
           );
         }
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
             SizedBox(
-              height: 340,
+              height: 130, 
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: provider.books.length,
                 itemBuilder: (context, index) {
                   final book = provider.books[index];
-                  return BookCard(book: book);
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: BookCard(book: book),
+                  );
                 },
               ),
             ),
-            const SizedBox(height: 24),
           ],
         );
       },
-    ); 
+    );
   }
 }

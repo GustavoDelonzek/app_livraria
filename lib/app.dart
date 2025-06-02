@@ -1,4 +1,5 @@
 import 'package:app_livraria/core/widgets/auth_guard.dart';
+import 'package:app_livraria/providers/author_provider.dart';
 import 'package:app_livraria/providers/book_provider.dart';
 import 'package:app_livraria/providers/search_provider.dart';
 import 'package:app_livraria/views/cart/cart_screen.dart';
@@ -26,13 +27,11 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => BookProvider()),
         ChangeNotifierProvider(create: (_) => SearchProvider()),
         ChangeNotifierProvider(create: (_) => CartViewModel()),
+        ChangeNotifierProvider(create: (_) => AuthorProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Livraria App',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
         initialRoute: '/login',
         routes: {
           '/login': (_) => const LoginScreen(),

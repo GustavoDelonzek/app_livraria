@@ -1,11 +1,12 @@
-import 'package:app_livraria/core/widgets/app_header.dart';
+import 'package:app_livraria/core/widgets/author_section.dart';
 import 'package:app_livraria/core/widgets/book_section.dart';
-import 'package:app_livraria/core/widgets/footer.dart';
+import 'package:app_livraria/providers/author_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'home_view_model.dart';
+import '../../../core/widgets/app_header.dart';
+import '../../../core/widgets/footer.dart';
 import '../../../core/widgets/book_card.dart';
+import 'home_view_model.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -15,44 +16,107 @@ class HomeScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => HomeViewModel(),
       child: Consumer<HomeViewModel>(
-        builder: (context, homeViewModel, _) {
-          final user = homeViewModel.currentUser;
+        builder: (context, viewModel, _) {
+          final user = viewModel.currentUser;
 
-          return Scaffold(
-            appBar: AppHeader(
-                title: 'Livraria',
-                showCart: true,
-                onSearch: () {
-                  Navigator.pushNamed(context, '/search');
-                },
-              ),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ListView(
-                children: [
-                  if (user != null)
-                    Text('Olá, ${user.email}', style: const TextStyle(fontSize: 18)),
-                  const SizedBox(height: 16),
+         return Scaffold(
+          appBar: AppHeader(
+            title: 'Livraria',
+            showCart: true,
+            onSearch: () => Navigator.pushNamed(context, '/search'),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (user != null)
+                        Text(
+                          'Olá, ${user.email}!',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Confira as novidades selecionadas para você!',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 32),
 
-                  ChangeNotifierProvider.value(
-                    value: homeViewModel.bestSellerProvider,
-                    child: const BookSection(title: 'Best Sellers'),
+                      const Text(
+                        'Popular Lists',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFFCE4EC), Color(0xFFFFE0B2)],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Romance Fiction',
+                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                SizedBox(height: 4),
+                                Text('15 livros',
+                                    style: TextStyle(fontSize: 12, color: Colors.grey)),
+                              ],
+                            ),
+                            Text('2',
+                                style: TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.pink,
+                                )),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+                      ChangeNotifierProvider.value(
+                        value: viewModel.bestSellerProvider,
+                        child: const BookSection(title: 'Best Sellers'),
+                      ),
+
+                      const SizedBox(height: 48),
+                      ChangeNotifierProvider(
+                        create: (_) => AuthorProvider()..loadFamousAuthors(),
+                        child: const AuthorSection(title: 'Top Autores'),
+                      ),
+
+                      ChangeNotifierProvider.value(
+                        value: viewModel.romanceProvider,
+                        child: const BookSection(title: 'Romance'),
+                      ),
+
+                      const SizedBox(height: 24),
+                      ChangeNotifierProvider.value(
+                        value: viewModel.sciFiProvider,
+                        child: const BookSection(title: 'Ficção Científica'),
+                      ),
+                      const SizedBox(height: 6),
+                    ],
                   ),
-
-                  ChangeNotifierProvider.value(
-                    value: homeViewModel.romanceProvider,
-                    child: const BookSection(title: 'Romance'),
-                  ),
-
-                  ChangeNotifierProvider.value(
-                    value: homeViewModel.sciFiProvider,
-                    child: const BookSection(title: 'Ficção Científica'),
-                  ),
-                  const AppFooter(),
-                ],
-              ),
+                ),
+                const AppFooter(),
+              ],
             ),
-          );
+          ),
+        );
+
         },
       ),
     );

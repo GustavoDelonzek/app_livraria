@@ -9,7 +9,7 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cartVM = context.watch<CartViewModel>(); // Reutiliza a instância global
+    final cartVM = context.watch<CartViewModel>();
 
     if (cartVM.isLoading) {
       return const Scaffold(
@@ -19,23 +19,26 @@ class CartScreen extends StatelessWidget {
 
     if (cartVM.items.isEmpty) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Carrinho')),
+        appBar: AppHeader(title: 'Carrinho', showBack: true),
         body: const Center(child: Text('Seu carrinho está vazio.')),
       );
     }
 
     return Scaffold(
-      appBar:AppHeader(title: 'Carrinho', showBack: true),
+      appBar: AppHeader(title: 'Carrinho', showBack: true),
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               itemCount: cartVM.items.length,
+              separatorBuilder: (_, __) => const Divider(),
               itemBuilder: (context, index) {
                 final item = cartVM.items[index];
                 final book = item.book;
 
                 return ListTile(
+                  contentPadding: EdgeInsets.zero,
                   leading: Image.network(
                     book.coverUrl,
                     width: 50,
@@ -85,8 +88,12 @@ class CartScreen extends StatelessWidget {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: Colors.grey.shade300)),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
