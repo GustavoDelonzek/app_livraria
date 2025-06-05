@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/widgets/app_header.dart';
 import '../../../core/widgets/footer.dart';
-import '../../../core/widgets/book_card.dart';
 import 'home_view_model.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -29,7 +28,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
+                Padding(  
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,12 +110,11 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const AppFooter(),
               ],
             ),
           ),
+          bottomNavigationBar: const AppFooter(),
         );
-
         },
       ),
     );

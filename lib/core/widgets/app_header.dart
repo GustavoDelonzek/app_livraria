@@ -25,6 +25,11 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
       ),
       centerTitle: true,
+      elevation: 0, 
+      foregroundColor: Colors.black,
+      scrolledUnderElevation: 0, 
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
       actions: [
         if (onSearch != null)
           IconButton(

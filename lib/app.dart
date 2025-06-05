@@ -33,6 +33,9 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Livraria App',
         initialRoute: '/login',
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+        ),	
         routes: {
           '/login': (_) => const LoginScreen(),
           '/register': (_) => const RegisterScreen(),

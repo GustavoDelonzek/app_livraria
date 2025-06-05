@@ -24,8 +24,8 @@ class BookCard extends StatelessWidget {
         );
       },
       child: Container(
-        width: 80,
-        height: 120,
+        width: 125,
+        height: 180,
         decoration: BoxDecoration(
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(8),

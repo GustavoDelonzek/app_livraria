@@ -10,7 +10,19 @@ class BookProvider extends ChangeNotifier {
   List<Book> get books => _books;
   bool get isLoading => _isLoading;
 
+  int _selectedTabIndex = 0;
+
+  int get selectedTabIndex => _selectedTabIndex;
+
   final OpenLibraryService _openLibraryService = OpenLibraryService();
+
+
+    void setSelectedTabIndex(int index) {
+      if (_selectedTabIndex != index) {
+        _selectedTabIndex = index;
+        notifyListeners();
+      }
+    }
 
   Future<void> fetchBooks(String query) async {
     _isLoading = true;
