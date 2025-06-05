@@ -10,7 +10,7 @@ class HomeViewModel extends ChangeNotifier {
 
   User? get currentUser => _auth.currentUser;
 
-  final BookProvider bestSellerProvider = BookProvider();
+  final BookProvider medievalProvider = BookProvider();
   final BookProvider romanceProvider = BookProvider();
   final BookProvider sciFiProvider = BookProvider();
 
@@ -20,7 +20,7 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> loadAll() async {
     await Future.wait([
-      bestSellerProvider.fetchBooksBySubject('bestseller'),
+      medievalProvider.fetchBooksBySubject('medieval'),
       romanceProvider.fetchBooksBySubject('romance'),
       sciFiProvider.fetchBooksBySubject('science_fiction'),
     ]);

@@ -2,67 +2,89 @@ class Book {
   final String key;
   final String title;
   final String author;
-  final int? coverId;
+  final String? thumbnailUrl;
   final String? description;
   final double price;
 
   Book({
+    required this.key,
     required this.title,
     required this.author,
-    this.coverId,
+    this.thumbnailUrl,
     this.description,
-    required this.key,
     required this.price,
   });
 
   factory Book.fromJson(Map<String, dynamic> json) {
     final key = json['key'] ?? '';
-
     final randomPrice = 19.9 + (60 * (key.hashCode % 1000) / 1000);
 
     return Book(
-      key: json['key'],
+      key: key,
       title: json['title'] ?? 'Sem título',
       author: (json['author_name'] != null && (json['author_name'] as List).isNotEmpty)
           ? json['author_name'][0]
           : 'Autor desconhecido',
-      coverId: json['cover_i'],
+      thumbnailUrl: json['cover_i'] != null
+          ? 'https://covers.openlibrary.org/b/id/${json['cover_i']}-M.jpg'
+          : null,
       description: json['description'],
       price: double.parse(randomPrice.toStringAsFixed(2)),
     );
   }
 
   factory Book.fromSubjectJson(Map<String, dynamic> json) {
-      final key = json['key'] ?? '';
-      
-      final randomPrice = 19.9 + (60 * (key.hashCode % 1000) / 1000);
+    final key = json['key'] ?? '';
+    final randomPrice = 19.9 + (60 * (key.hashCode % 1000) / 1000);
 
-      return Book(
-        key: key,
-        title: json['title'] ?? 'Sem título',
-        author: (json['authors'] != null && (json['authors'] as List).isNotEmpty)
-            ? json['authors'][0]['name']
-            : 'Autor desconhecido',
-        coverId: json['cover_id'],
-        description: json['description'],
-        price: double.parse(randomPrice.toStringAsFixed(2)), 
-      );
-    }
-
-
-  String get coverUrl {
-    if (coverId != null) {
-      return 'https://covers.openlibrary.org/b/id/$coverId-M.jpg';
-    }
-    return 'https://via.placeholder.com/128x193.png?text=Sem+Capa';
+    return Book(
+      key: key,
+      title: json['title'] ?? 'Sem título',
+      author: (json['authors'] != null && (json['authors'] as List).isNotEmpty)
+          ? json['authors'][0]['name']
+          : 'Autor desconhecido',
+      thumbnailUrl: json['cover_id'] != null
+          ? 'https://covers.openlibrary.org/b/id/${json['cover_id']}-M.jpg'
+          : null,
+      description: json['description'],
+      price: double.parse(randomPrice.toStringAsFixed(2)),
+    );
   }
 
-    Book copyWith({String? description}) {
+  factory Book.fromGoogleJson(Map<String, dynamic> json) {
+    final volumeInfo = json['volumeInfo'];
+    final key = json['id'] ?? '';
+    final randomPrice = 19.9 + (60 * (key.hashCode % 1000) / 1000);
+
+    return Book(
+      key: key,
+      title: volumeInfo['title'] ?? 'Sem título',
+      author: (volumeInfo['authors'] != null && volumeInfo['authors'].isNotEmpty)
+          ? volumeInfo['authors'][0]
+          : 'Autor desconhecido',
+      thumbnailUrl: fixImageUrl(volumeInfo['imageLinks']?['thumbnail']),
+      description: volumeInfo['description'],
+      price: double.parse(randomPrice.toStringAsFixed(2)),
+    );
+  }
+
+  String get coverUrl =>
+      thumbnailUrl ?? 'https://via.placeholder.com/128x193.png?text=Sem+Capa';
+
+  static String fixImageUrl(String? url) {
+  if (url == null) {
+    return 'https://via.placeholder.com/128x196?text=Sem+Capa';
+  }
+
+  return 'https://corsproxy.io/?' + Uri.encodeFull(url.replaceFirst('http://', 'https://'));
+}
+
+  Book copyWith({String? description}) {
     return Book(
       key: key,
       title: title,
       author: author,
-      coverId: coverId,
+      thumbnailUrl: thumbnailUrl,
       description: description ?? this.description,
       price: price,
     );
@@ -73,7 +95,7 @@ class Book {
       'key': key,
       'title': title,
       'author': author,
-      'coverId': coverId,
+      'thumbnailUrl': thumbnailUrl,
       'description': description,
       'price': price,
     };
@@ -84,12 +106,11 @@ class Book {
       key: map['key'],
       title: map['title'],
       author: map['author'],
-      coverId: map['coverId'],
+      thumbnailUrl: map['thumbnailUrl'],
       description: map['description'],
       price: (map['price'] is int)
           ? (map['price'] as int).toDouble()
           : map['price'] ?? 0.0,
     );
   }
-
 }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:app_livraria/models/book.dart';
 import 'package:app_livraria/views/book_details/book_details_screen.dart';
@@ -32,11 +33,11 @@ class BookCard extends StatelessWidget {
           border: Border.all(color: Colors.grey.shade300),
         ),
         clipBehavior: Clip.hardEdge,
-        child: Image.network(
-          book.coverUrl,
+        child: CachedNetworkImage(
+          imageUrl: book.coverUrl,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) =>
-              const Center(child: Icon(Icons.book, size: 40)),
+          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+          errorWidget: (context, url, error) => const Center(child: Icon(Icons.book, size: 40)),
         ),
       ),
     );

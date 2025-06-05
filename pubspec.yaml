@@ -15,6 +15,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   firebase_auth: ^4.17.3
   http: ^1.4.0
+  cached_network_image: ^3.3.1
 
 dev_dependencies:
   flutter_test:

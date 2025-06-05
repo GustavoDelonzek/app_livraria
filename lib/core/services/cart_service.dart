@@ -30,7 +30,7 @@ class CartService {
       await doc.set({
         'title': book.title,
         'author': book.author,
-        'coverId': book.coverId,
+        'thumbnailUrl': book.thumbnailUrl,
         'price': book.price,
         'quantity': 1,
         'bookKey': book.key, 
@@ -58,7 +58,7 @@ class CartService {
         key: data['bookKey'],
         title: data['title'],
         author: data['author'],
-        coverId: data['coverId'],
+        thumbnailUrl: data['thumbnailUrl'],
         price: (data['price'] as num).toDouble(),
         description: null, 
       );
@@ -79,7 +79,7 @@ class CartService {
           key: data['bookKey'],
           title: data['title'],
           author: data['author'],
-          coverId: data['coverId'],
+          thumbnailUrl: data['thumbnailUrl'],
           price: (data['price'] as num).toDouble(),
           description: null,
         );

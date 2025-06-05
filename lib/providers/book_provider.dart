@@ -1,3 +1,4 @@
+import 'package:app_livraria/core/services/google_books_service.dart';
 import 'package:app_livraria/core/services/open_library_service.dart';
 import 'package:app_livraria/models/book.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class BookProvider extends ChangeNotifier {
   int get selectedTabIndex => _selectedTabIndex;
 
   final OpenLibraryService _openLibraryService = OpenLibraryService();
-
+  final GoogleBooksService _googleBooksService = GoogleBooksService();
 
     void setSelectedTabIndex(int index) {
       if (_selectedTabIndex != index) {
@@ -43,7 +44,20 @@ class BookProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _books = await _openLibraryService.fetchBooksBySubject(subject);
+      _books = await _googleBooksService.fetchBooksBySubject(subject);
+    } catch (e) {
+      _books = [];
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  Future<void> fetchBooksFamous() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      _books = await _googleBooksService.fetchBooksFamous();
     } catch (e) {
       _books = [];
     } finally {

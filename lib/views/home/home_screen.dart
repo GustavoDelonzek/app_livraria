@@ -86,8 +86,8 @@ class HomeScreen extends StatelessWidget {
 
                       const SizedBox(height: 24),
                       ChangeNotifierProvider.value(
-                        value: viewModel.bestSellerProvider,
-                        child: const BookSection(title: 'Best Sellers'),
+                        value: viewModel.medievalProvider,
+                        child: const BookSection(title: 'Medieval'),
                       ),
 
                       const SizedBox(height: 48),
