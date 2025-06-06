@@ -1,8 +1,8 @@
+import 'package:app_livraria/core/services/google_books_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:app_livraria/models/book.dart';
 import 'package:app_livraria/views/book_details/book_details_screen.dart';
-import 'package:app_livraria/core/services/open_library_service.dart';
 
 class BookCard extends StatelessWidget {
   final Book book;
@@ -13,14 +13,10 @@ class BookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        final service = OpenLibraryService();
-        final description = await service.fetchBookDescription(book.key);
-        final bookWithDescription = book.copyWith(description: description);
-
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => BookDetailsScreen(book: bookWithDescription),
+            builder: (_) => BookDetailsScreen(book: book),
           ),
         );
       },

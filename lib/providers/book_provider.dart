@@ -30,7 +30,7 @@ class BookProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _books = await _openLibraryService.fetchBooks(query);
+      _books = await _googleBooksService.fetchBooks(query);
     } catch (e) {
       _books = [];
     } finally {

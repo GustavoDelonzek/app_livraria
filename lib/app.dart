@@ -2,6 +2,7 @@ import 'package:app_livraria/core/widgets/auth_guard.dart';
 import 'package:app_livraria/providers/author_provider.dart';
 import 'package:app_livraria/providers/book_provider.dart';
 import 'package:app_livraria/providers/search_provider.dart';
+import 'package:app_livraria/views/author/author_books_screen.dart';
 import 'package:app_livraria/views/cart/cart_screen.dart';
 import 'package:app_livraria/views/cart/cart_view_model.dart';
 import 'package:app_livraria/views/search/search_screen.dart';
@@ -33,9 +34,6 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Livraria App',
         initialRoute: '/login',
-        theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
-        ),	
         routes: {
           '/login': (_) => const LoginScreen(),
           '/register': (_) => const RegisterScreen(),

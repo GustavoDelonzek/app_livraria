@@ -15,24 +15,6 @@ class Book {
     required this.price,
   });
 
-  factory Book.fromJson(Map<String, dynamic> json) {
-    final key = json['key'] ?? '';
-    final randomPrice = 19.9 + (60 * (key.hashCode % 1000) / 1000);
-
-    return Book(
-      key: key,
-      title: json['title'] ?? 'Sem título',
-      author: (json['author_name'] != null && (json['author_name'] as List).isNotEmpty)
-          ? json['author_name'][0]
-          : 'Autor desconhecido',
-      thumbnailUrl: json['cover_i'] != null
-          ? 'https://covers.openlibrary.org/b/id/${json['cover_i']}-M.jpg'
-          : null,
-      description: json['description'],
-      price: double.parse(randomPrice.toStringAsFixed(2)),
-    );
-  }
-
   factory Book.fromSubjectJson(Map<String, dynamic> json) {
     final key = json['key'] ?? '';
     final randomPrice = 19.9 + (60 * (key.hashCode % 1000) / 1000);
@@ -72,12 +54,12 @@ class Book {
       thumbnailUrl ?? 'https://via.placeholder.com/128x193.png?text=Sem+Capa';
 
   static String fixImageUrl(String? url) {
-  if (url == null) {
-    return 'https://via.placeholder.com/128x196?text=Sem+Capa';
-  }
+    if (url == null) {
+      return 'https://via.placeholder.com/128x196?text=Sem+Capa';
+    }
 
-  return 'https://corsproxy.io/?' + Uri.encodeFull(url.replaceFirst('http://', 'https://'));
-}
+    return 'http://thingproxy.freeboard.io/fetch/${Uri.encodeFull(url.replaceFirst('http://', 'https://'))}';
+  }
 
   Book copyWith({String? description}) {
     return Book(

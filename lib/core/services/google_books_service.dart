@@ -39,6 +39,22 @@ class GoogleBooksService {
     }
   }
 
+    Future<List<Book>> fetchBooksByAuthor(String authorName) async {
+    final url = Uri.parse(
+      'https://www.googleapis.com/books/v1/volumes?q=inauthor:${Uri.encodeComponent(authorName)}&orderBy=relevance&maxResults=20&key=$apiKey',
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List items = data['items'] ?? [];
+      return items.map((json) => Book.fromGoogleJson(json)).toList();
+    } else {
+      throw Exception('Erro ao buscar livros por autor');
+    }
+  }
+
   Future<List<Book>> fetchBooksFamous() async {
     final url = Uri.parse(
       'https://www.googleapis.com/books/v1/volumes?q=a&orderBy=relevance&key=$apiKey',

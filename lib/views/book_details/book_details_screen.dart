@@ -17,144 +17,157 @@ class BookDetailsScreen extends StatefulWidget {
 class _BookDetailsScreenState extends State<BookDetailsScreen> {
   bool showFullDescription = false;
 
-  @override
-  Widget build(BuildContext context) {
-    final cartViewModel = context.watch<CartViewModel>();
-    final alreadyInCart = cartViewModel.isInCart(widget.book.key);
-    final description = widget.book.description ?? 'Sem descrição disponível.';
+ @override
+Widget build(BuildContext context) {
+  final cartViewModel = context.watch<CartViewModel>();
+  final alreadyInCart = cartViewModel.isInCart(widget.book.key);
+  final description = widget.book.description ?? 'Sem descrição disponível.';
 
-    return Scaffold(
+  return Scaffold(
       appBar: AppHeader(
         title: widget.book.title,
         showCart: true,
         showBack: true,
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: IntrinsicHeight(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                widget.book.coverUrl,
-                                height: 260,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => Container(
-                                  height: 260,
-                                  width: 180,
-                                  color: Colors.grey[200],
-                                  child: const Icon(Icons.book, size: 100, color: Colors.grey),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-
-                          Text(
-                            widget.book.title,
-                            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Autor: ${widget.book.author}',
-                            style: const TextStyle(fontSize: 16, color: Colors.grey),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Preço: R\$ ${widget.book.price.toStringAsFixed(2)}',
-                            style: const TextStyle(fontSize: 16, color: Colors.green),
-                          ),
-                          const SizedBox(height: 16),
-
-                          Row(
-                            children: List.generate(
-                              5,
-                              (index) => const Icon(Icons.star, color: Colors.amber, size: 20),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
-                          AnimatedCrossFade(
-                            duration: const Duration(milliseconds: 300),
-                            crossFadeState: showFullDescription
-                                ? CrossFadeState.showSecond
-                                : CrossFadeState.showFirst,
-                            firstChild: Text(
-                              description.length > 200
-                                  ? '${description.substring(0, 200)}...'
-                                  : description,
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            secondChild:
-                                Text(description, style: const TextStyle(fontSize: 16)),
-                          ),
-                          if (description.length > 200)
-                            TextButton(
-                              onPressed: () => setState(() {
-                                showFullDescription = !showFullDescription;
-                              }),
-                              child: Text(showFullDescription ? 'Mostrar menos' : 'Ler mais'),
-                            ),
-
-                          const SizedBox(height: 16),
-
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            child: alreadyInCart
-                                ? ElevatedButton.icon(
-                                    key: const ValueKey('in_cart'),
-                                    onPressed: null,
-                                    icon: const Icon(Icons.check),
-                                    label: const Text('Já no carrinho'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.grey,
-                                      minimumSize: const Size.fromHeight(48),
-                                    ),
-                                  )
-                                : ElevatedButton.icon(
-                                    key: const ValueKey('add_to_cart'),
-                                    onPressed: () {
-                                      cartViewModel.addToCart(widget.book);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text('Livro adicionado ao carrinho!')),
-                                      );
-                                    },
-                                    icon: const Icon(Icons.add_shopping_cart),
-                                    label: const Text('Adicionar ao Carrinho'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.orange,
-                                      foregroundColor: Colors.white,
-                                      minimumSize: const Size.fromHeight(48),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      elevation: 3,
-                                    ),
-                                  ),
-                          ),
-                        ],
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        widget.book.coverUrl,
+                        height: 260,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          height: 260,
+                          width: 180,
+                          color: Colors.grey[200],
+                          child: const Icon(Icons.book, size: 100, color: Colors.grey),
+                        ),
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 24),
 
-                    const AppFooter(),
-                  ],
-                ),
+                  Text(
+                    widget.book.title,
+                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Autor: ${widget.book.author}',
+                    style: const TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Preço: R\$ ${widget.book.price.toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 16, color: Colors.green),
+                  ),
+                  const SizedBox(height: 16),
+
+                  Row(
+                    children: List.generate(
+                      5,
+                      (index) => const Icon(Icons.star, color: Colors.amber, size: 20),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                 AnimatedCrossFade(
+  duration: const Duration(milliseconds: 300),
+  crossFadeState:
+      showFullDescription ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+  firstChild: Text(
+    description.length > 350 ? '${description.substring(0, 350)}...' : description,
+    style: const TextStyle(
+      fontSize: 16,
+      height: 1.5,
+      color: Colors.black87,
+      letterSpacing: 0.2,
+    ),
+  ),
+  secondChild: Text(
+    description,
+    style: const TextStyle(
+      fontSize: 16,
+      height: 1.5,
+      color: Colors.black87,
+      letterSpacing: 0.2,
+    ),
+  ),
+),
+if (description.length > 350)
+  Align(
+    alignment: Alignment.centerLeft,
+    child: TextButton(
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.zero,
+        minimumSize: const Size(50, 30),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      onPressed: () => setState(() {
+        showFullDescription = !showFullDescription;
+      }),
+      child: Text(
+        showFullDescription ? 'Mostrar menos' : 'Ler mais',
+        style: TextStyle(
+          fontSize: 14,
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
+        ),
+      ),
+    ),
+  ),
+                  const SizedBox(height: 16),
+
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: alreadyInCart
+                        ? ElevatedButton.icon(
+                            key: const ValueKey('in_cart'),
+                            onPressed: null,
+                            icon: const Icon(Icons.check),
+                            label: const Text('Já no carrinho'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey,
+                              minimumSize: const Size.fromHeight(48),
+                            ),
+                          )
+                        : ElevatedButton.icon(
+                            key: const ValueKey('add_to_cart'),
+                            onPressed: () {
+                              cartViewModel.addToCart(widget.book);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Livro adicionado ao carrinho!')),
+                              );
+                            },
+                            icon: const Icon(Icons.add_shopping_cart),
+                            label: const Text('Adicionar ao Carrinho'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              foregroundColor: Colors.white,
+                              minimumSize: const Size.fromHeight(48),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 3,
+                            ),
+                          ),
+                  ),
+                ],
               ),
             ),
-          );
-        },
+          ),
+
+          const AppFooter(),
+        ],
       ),
     );
   }

@@ -1,10 +1,10 @@
 import 'dart:async';
+import 'package:app_livraria/core/services/google_books_service.dart';
 import 'package:flutter/material.dart';
 import 'package:app_livraria/models/book.dart';
-import 'package:app_livraria/core/services/open_library_service.dart';
 
 class SearchViewModel extends ChangeNotifier {
-  final OpenLibraryService _service = OpenLibraryService();
+  final GoogleBooksService _service = GoogleBooksService();
 
   List<Book> books = [];
   bool isLoading = false;
@@ -49,7 +49,7 @@ class SearchViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final newBooks = await _service.fetchBooks(query, page: page);
+      final newBooks = await _service.fetchBooks(query);
 
       if (append) {
         books.addAll(newBooks);

@@ -1,10 +1,10 @@
-import 'package:app_livraria/core/services/open_library_service.dart';
+import 'package:app_livraria/core/services/google_books_service.dart';
 import 'package:app_livraria/models/book.dart';
 import 'package:flutter/material.dart';
 
 
 class SearchProvider with ChangeNotifier {
-  final _service = OpenLibraryService();
+  final _service = GoogleBooksService();
 
   List<Book> _results = [];
   List<Book> get results => _results;

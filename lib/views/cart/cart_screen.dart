@@ -57,7 +57,7 @@ class CartScreen extends StatelessWidget {
                           icon: const Icon(Icons.remove_circle_outline),
                           onPressed: () {
                             final newQty = item.quantity - 1;
-                            cartVM.updateQuantity(book.key!, newQty);
+                            cartVM.updateQuantity(book.key, newQty);
                           },
                         ),
                         Flexible(
@@ -71,14 +71,14 @@ class CartScreen extends StatelessWidget {
                           icon: const Icon(Icons.add_circle_outline),
                           onPressed: () {
                             final newQty = item.quantity + 1;
-                            cartVM.updateQuantity(book.key!, newQty);
+                            cartVM.updateQuantity(book.key, newQty);
                           },
                         ),
                         IconButton(
                           iconSize: 20,
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
-                            cartVM.removeFromCart(book.key!);
+                            cartVM.removeFromCart(book.key);
                           },
                         ),
                       ],

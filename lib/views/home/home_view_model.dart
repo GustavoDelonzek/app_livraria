@@ -1,5 +1,3 @@
-import 'dart:math';
-import 'package:app_livraria/models/book.dart';
 import 'package:app_livraria/providers/book_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
