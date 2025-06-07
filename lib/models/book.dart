@@ -53,12 +53,15 @@ class Book {
   String get coverUrl =>
       thumbnailUrl ?? 'https://via.placeholder.com/128x193.png?text=Sem+Capa';
 
-  static String fixImageUrl(String? url) {
+    static String fixImageUrl(String? url) {
     if (url == null) {
       return 'https://via.placeholder.com/128x196?text=Sem+Capa';
     }
 
-    return 'http://thingproxy.freeboard.io/fetch/${Uri.encodeFull(url.replaceFirst('http://', 'https://'))}';
+    final fixedUrl = url.replaceFirst('http://', 'https://');
+    final encoded = Uri.encodeComponent(fixedUrl); 
+
+    return 'http://localhost:3000/proxy/$encoded';
   }
 
   Book copyWith({String? description}) {
