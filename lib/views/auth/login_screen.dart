@@ -8,6 +8,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<LoginViewModel>(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
       body: Padding(
@@ -16,6 +17,7 @@ class LoginScreen extends StatelessWidget {
           children: [
             TextField(
               onChanged: model.setEmail,
+              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(labelText: 'Email'),
             ),
             TextField(
@@ -23,11 +25,20 @@ class LoginScreen extends StatelessWidget {
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Senha'),
             ),
+            if (model.errorMessage != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                model.errorMessage!,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ],
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => model.login(context),
-              child: const Text('Entrar'),
-            ),
+            model.isLoading
+                ? const CircularProgressIndicator()
+                : ElevatedButton(
+                    onPressed: () => model.login(context),
+                    child: const Text('Entrar'),
+                  ),
             TextButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/register');
