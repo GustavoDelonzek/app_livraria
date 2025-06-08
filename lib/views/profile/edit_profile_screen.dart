@@ -1,4 +1,5 @@
 import 'package:app_livraria/core/widgets/app_header.dart';
+import 'package:app_livraria/core/widgets/custom_text_field.dart';
 import 'package:app_livraria/core/widgets/footer.dart';
 import 'package:app_livraria/core/widgets/screen_container.dart';
 import 'package:app_livraria/views/profile/profile_view_model.dart';
@@ -64,10 +65,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  Widget _buildGenreChips() {
+ Widget _buildGenreChips() {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
+      alignment: WrapAlignment.center,  
       children: allGenres.map((genre) {
         final isSelected = selectedGenres.contains(genre);
         return ChoiceChip(
@@ -92,6 +94,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<ProfileViewModel>();
@@ -102,20 +105,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Nome'),
-            ),
-            const SizedBox(height: 16),
-            TextField(
+            CustomTextField(
               controller: _bioController,
-              maxLines: 3,
-              decoration: const InputDecoration(labelText: 'Bio'),
+              label: 'Biografia',
             ),
             const SizedBox(height: 24),
             const Text(
               'Gêneros Favoritos',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color.fromRGBO(143, 179, 195,1)),
             ),
             const SizedBox(height: 8),
             _buildGenreChips(),
@@ -126,6 +123,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 onPressed: viewModel.isLoading ? null : _saveProfile,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromRGBO(143, 179, 195, 1),
+                  foregroundColor: Colors.white, 
                 ),
                 child: viewModel.isLoading
                     ? const CircularProgressIndicator(color: Colors.white)

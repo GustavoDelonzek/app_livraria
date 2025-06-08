@@ -1,9 +1,12 @@
+import 'package:app_livraria/core/services/google_books_service.dart';
 import 'package:app_livraria/core/widgets/app_header.dart';
 import 'package:app_livraria/core/widgets/footer.dart';
 import 'package:app_livraria/core/widgets/genre_badge.dart';
+import 'package:app_livraria/core/widgets/review_card.dart';
 import 'package:app_livraria/core/widgets/screen_container.dart';
 import 'package:app_livraria/models/user.dart';
 import 'package:app_livraria/views/auth/auth_view_model.dart';
+import 'package:app_livraria/views/book_details/book_details_screen.dart';
 import 'package:app_livraria/views/profile/edit_profile_screen.dart';
 import 'package:app_livraria/views/profile/profile_view_model.dart';
 import 'package:flutter/material.dart';
@@ -21,13 +24,51 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
    bool _loaded = false;
 
+   Future<void> _openBookDetails(String bookId) async {
+      final service = GoogleBooksService();
+      final book = await service.fetchBookById(bookId);
+
+      if (book != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BookDetailsScreen(book: book),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Livro não encontrado')),
+        );
+      }
+    }
+
     @override
     void didChangeDependencies() {
       super.didChangeDependencies();
-      if (!_loaded && widget.userId != null) {
-        Provider.of<ProfileViewModel>(context, listen: false)
-            .loadUserById(widget.userId!);
+
+      if (!_loaded) {
+        _loadProfileData();
         _loaded = true;
+      }
+    }
+
+    Future<void> _loadProfileData() async {
+      final viewModel = Provider.of<ProfileViewModel>(context, listen: false);
+
+      if (widget.userId != null) {
+        await viewModel.loadUserById(widget.userId!);
+      } else {
+        final currentUserId = viewModel.localCurrentUser?.id;
+
+        if (currentUserId != null) {
+          await viewModel.loadUserById(currentUserId);
+        } else {
+          await viewModel.fetchCurrentUser();
+
+          if (viewModel.localCurrentUser?.id != null) {
+            await viewModel.loadUserById(viewModel.localCurrentUser!.id);
+          }
+        }
       }
     }
 
@@ -132,48 +173,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 16),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  viewModel.formatFollowerCount(user.followingCount),
-                                  style: const TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  'Seguindo',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey[500],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(width: 32),
-                            Column(
-                              children: [
-                                Text(
-                                  viewModel.formatFollowerCount(user.followersCount),
-                                  style: const TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  'Seguidores',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey[500],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                       Consumer<ProfileViewModel>(
+  builder: (context, viewModel, child) {
+    final user = viewModel.localCurrentUser;
+
+    if (user == null) {
+      return const CircularProgressIndicator(); // ou SizedBox.shrink()
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Column(
+          children: [
+            Text(
+              viewModel.formatFollowerCount(user.followingCount),
+              style: const TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'Seguindo',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(width: 32),
+        Column(
+          children: [
+            Text(
+              viewModel.formatFollowerCount(user.followersCount),
+              style: const TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'Seguidores',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  },
+),
                         const SizedBox(height: 16),
 
                        if (!isOwnProfile)
@@ -245,15 +296,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   : const Text('Usuário não possui gêneros favoritos'),
 
                   const SizedBox(height: 24),
-
                   const Text(
                     'Minhas Avaliações',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
-
-                  )
+                  ),
+                viewModel.userReviews.isNotEmpty ? 
+                 Expanded(
+                    child: ListView.builder(
+                    itemCount: viewModel.userReviews.length,
+                    itemBuilder: (context, index) {
+                      final review = viewModel.userReviews[index];
+                      return ReviewCard(
+                        review: review,
+                        onTapBook: () => _openBookDetails(review.bookId),
+                      );
+                    },
+                  ),)
+                  : 
+                      const Text(
+                        'Nenhuma avaliação encontrada.',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
                 ],
               ),
             ),

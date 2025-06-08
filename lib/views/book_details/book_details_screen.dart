@@ -72,14 +72,6 @@ Widget build(BuildContext context) {
                   ),
                   const SizedBox(height: 16),
 
-                  Row(
-                    children: List.generate(
-                      5,
-                      (index) => const Icon(Icons.star, color: Colors.amber, size: 20),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
                  AnimatedCrossFade(
                   duration: const Duration(milliseconds: 300),
                   crossFadeState:

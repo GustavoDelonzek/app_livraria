@@ -23,6 +23,37 @@ class GoogleBooksService {
     }
   }
 
+  Future<Book?> fetchBookById(String bookId) async {
+    final url = Uri.parse('https://www.googleapis.com/books/v1/volumes/$bookId?key=$apiKey');
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return Book.fromGoogleJson(data);
+      } else {
+        print('Erro na API Google Books: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Erro ao buscar livro: $e');
+      return null;
+    }
+  }
+
+  Future<String?> fetchBookTitleFromGoogleBooks(String volumeId) async {
+    final url = Uri.parse('https://www.googleapis.com/books/v1/volumes/$volumeId');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['volumeInfo']?['title'] as String?;
+    } else {
+      print('Erro ao buscar título do livro: ${response.statusCode}');
+      return null;
+    }
+  }
+
   Future<List<Book>> fetchBooksBySubject(String subject) async {
     final url = Uri.parse(
       'https://www.googleapis.com/books/v1/volumes?q=subject:$subject&orderBy=relevance&maxResults=20&key=$apiKey',

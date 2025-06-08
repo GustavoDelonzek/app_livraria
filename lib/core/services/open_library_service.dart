@@ -21,6 +21,20 @@ class OpenLibraryService {
       throw Exception('Failed to load books by subject');
     }
   }
+  
+  Future<String?> fetchBookTitleFromOpenLibrary(String openLibraryId) async {
+    final url = Uri.parse('https://openlibrary.org/works/$openLibraryId.json');
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['title'] as String?;
+    } else {
+      return null;
+    }
+  }
+
 
   Future<String> fetchBookDescription(String workKey) async {
     final url = Uri.parse('https://openlibrary.org$workKey.json');

@@ -1,10 +1,10 @@
-// lib/models/review.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Review {
   final String id;
   final String bookId;
   final String userId;
+  final String userName;
   final String content;
   final int rating;
   final int likeCount;
@@ -20,18 +20,20 @@ class Review {
     required this.createdAt,
     required this.likeCount,
     required this.likedBy,
+    required this.userName,
   });
 
   factory Review.fromMap(Map<String, dynamic> map, String id) {
     return Review(
       id: id,
-      bookId: map['bookId'],
-      userId: map['userId'],
-      content: map['content'],
-      rating: map['rating'],
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
-      likeCount: map['likeCount'],
-      likedBy: List<String>.from(map['likedBy']),
+      bookId: map['bookId'] ?? '',
+      userId: map['userId'] ?? '',
+      content: map['content'] ?? '',
+      rating: map['rating'] ?? 0,
+      createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      likeCount: map['likeCount'] ?? 0,
+      likedBy: List<String>.from(map['likedBy'] ?? []),
+      userName: map['userName'] ?? '',
     );
   }
 
@@ -44,6 +46,7 @@ class Review {
       'createdAt': createdAt,
       'likeCount': likeCount,
       'likedBy': likedBy,
+      'userName': userName,
     };
   }
 }
