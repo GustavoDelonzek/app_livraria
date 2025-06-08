@@ -10,6 +10,9 @@ class ProfileViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  UserLocal? _viewedUser;
+  UserLocal? get viewedUser => _viewedUser;
+
   Future<void> fetchOrCreateUser(String uid, String email) async {
     final docRef = _firestore.collection('users').doc(uid);
     final doc = await docRef.get();
@@ -53,6 +56,16 @@ class ProfileViewModel extends ChangeNotifier {
     }
 
     return null;
+  }
+
+    Future<void> loadUserById(String id) async {
+    _isLoading = true;
+    notifyListeners();
+
+    _viewedUser = await getUserById(id);
+    
+    _isLoading = false;
+    notifyListeners();
   }
 
   Future<void> toggleFollow(String targetUserId) async {

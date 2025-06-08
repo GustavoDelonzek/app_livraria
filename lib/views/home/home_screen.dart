@@ -21,8 +21,7 @@ class HomeScreen extends StatelessWidget {
          return Scaffold(
           appBar: AppHeader(
             title: 'Livraria',
-            showCart: true,
-            onSearch: () => Navigator.pushNamed(context, '/search'),
+            showCart: true
           ),
           body: SingleChildScrollView(
             child: Column(
@@ -67,7 +66,7 @@ class HomeScreen extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Romance Fiction',
+                                Text('Romance',
                                     style: TextStyle(fontWeight: FontWeight.bold)),
                                 SizedBox(height: 4),
                                 Text('15 livros',
@@ -93,7 +92,7 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 48),
                       ChangeNotifierProvider(
                         create: (_) => AuthorProvider()..loadFamousAuthors(),
-                        child: const AuthorSection(title: 'Top Autores'),
+                        child: const AuthorSection(title: 'Autores Famosos'),
                       ),
 
                       ChangeNotifierProvider.value(

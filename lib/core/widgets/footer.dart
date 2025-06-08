@@ -39,14 +39,9 @@ class AppFooter extends StatelessWidget {
                 onTap: () => onNavItemTap(1, '/search'),
               ),
               _buildNavItem(
-                icon: Icons.list,
-                isSelected: bookProvider.selectedTabIndex == 2,
-                onTap: () => onNavItemTap(2, '/list'),
-              ),
-              _buildNavItem(
                 icon: Icons.person,
-                isSelected: bookProvider.selectedTabIndex == 3,
-                onTap: () => onNavItemTap(3, '/profile'),
+                isSelected: bookProvider.selectedTabIndex == 2,
+                onTap: () => onNavItemTap(2, '/profile'),
               ),
               
             ],

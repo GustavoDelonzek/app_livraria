@@ -9,10 +9,28 @@ import 'package:app_livraria/views/profile/profile_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final String? userId;
 
   const ProfileScreen({super.key, this.userId});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+   bool _loaded = false;
+
+    @override
+    void didChangeDependencies() {
+      super.didChangeDependencies();
+      if (!_loaded && widget.userId != null) {
+        Provider.of<ProfileViewModel>(context, listen: false)
+            .loadUserById(widget.userId!);
+        _loaded = true;
+      }
+    }
+
 
   void _showProfileOptions(BuildContext context) {
     showModalBottomSheet(
@@ -47,6 +65,7 @@ class ProfileScreen extends StatelessWidget {
         );
       },
     );
+    
   }
 
 
@@ -55,19 +74,20 @@ class ProfileScreen extends StatelessWidget {
     return Consumer<ProfileViewModel>(
       builder: (context, viewModel, child) {
         final currentUser = viewModel.localCurrentUser;
-        final isOwnProfile = userId == null || userId == currentUser?.id;
-        final UserLocal? user = isOwnProfile
-            ? currentUser
-            : viewModel.getUserById(userId!) as UserLocal?;
+        final isOwnProfile = widget.userId == null || widget.userId == currentUser?.id;
 
-        if (user == null) {
+        final UserLocal? user = isOwnProfile ? currentUser : viewModel.viewedUser;
+
+        if (viewModel.isLoading || user == null) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
         return Scaffold(
-          appBar: AppHeader(title: 'Perfil', showBack: true, onMore: () => _showProfileOptions(context),),
+          appBar: AppHeader(title: 'Perfil', showBack: true, showCart: true,  onMore: () => isOwnProfile ? _showProfileOptions(context) : ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Função de denunciar usuário ainda não implementada.')),
+                    )),
           bottomNavigationBar: const AppFooter(),
           body: SafeArea(
             child: ScreenContainer(
@@ -214,22 +234,25 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: user.favoriteGenres.map((genre) {
-                      return GenreBadge(genre: genre);
-                    }).toList(),
-                  ),
+                  user.favoriteGenres.isNotEmpty ?
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: user.favoriteGenres.map((genre) {
+                        return GenreBadge(genre: genre);
+                      }).toList(),
+                    )
+                  : const Text('Usuário não possui gêneros favoritos'),
+
                   const SizedBox(height: 24),
 
                   const Text(
-                    'Minhas Listas',
+                    'Minhas Avaliações',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
-                    //TODO - depois de implementar listas
+
                   )
                 ],
               ),

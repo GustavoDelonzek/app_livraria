@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'package:app_livraria/core/services/google_books_service.dart';
+import 'package:app_livraria/models/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app_livraria/models/book.dart';
 
 class SearchViewModel extends ChangeNotifier {
   final GoogleBooksService _service = GoogleBooksService();
 
+  List<UserLocal> users = [];
   List<Book> books = [];
+
   bool isLoading = false;
   bool hasMore = true; 
   int _page = 1;
@@ -14,28 +18,33 @@ class SearchViewModel extends ChangeNotifier {
 
   Timer? _debounce;
 
-  void onSearchTextChanged(String text) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-
-    if (text.length < 3) {
+  Future<void> onSearchTextChanged(String query, {bool searchUsers = false}) async {
+    if (query.length < 3) {
       books = [];
-      isLoading = false;
-      hasMore = true;
-      _page = 1;
-      _lastQuery = '';
+      users = [];
       notifyListeners();
       return;
     }
 
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
-      if (text != _lastQuery) {
-        books = [];
-        _page = 1;
-        hasMore = true;
-        _lastQuery = text;
-      }
-      await _search(text, page: _page, append: false);
-    });
+    isLoading = true;
+    notifyListeners();
+
+    if (searchUsers) {
+      final result = await FirebaseFirestore.instance
+          .collection('users')
+          .where('name', isGreaterThanOrEqualTo: query)
+          .where('name', isLessThanOrEqualTo: '$query\uf8ff')
+          .get();
+
+      users = result.docs
+          .map((doc) => UserLocal.fromMap(doc.data(), doc.id))
+          .toList();
+    } else {
+      books = await _service.fetchBooks(query);
+    }
+
+    isLoading = false;
+    notifyListeners();
   }
 
   Future<void> loadNextPage() async {
@@ -66,6 +75,8 @@ class SearchViewModel extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+  
 
   @override
   void dispose() {
