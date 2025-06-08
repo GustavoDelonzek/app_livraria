@@ -1,5 +1,9 @@
+import 'package:app_livraria/models/user.dart';
+import 'package:app_livraria/views/profile/profile_view_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class AuthViewModel extends ChangeNotifier {
   bool _isLoading = false;
@@ -15,6 +19,9 @@ class AuthViewModel extends ChangeNotifier {
   bool get isLoginMode => _isLoginMode;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+   UserLocal? localCurrentUser;
 
   void toggleAuthMode() {
     _isLoginMode = !_isLoginMode;
@@ -23,7 +30,8 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> login() async {
+  Future<bool> login(BuildContext context) async {
+    _clearError();
     if (!_validateLoginForm()) return false;
 
     _setLoading(true);
@@ -37,7 +45,11 @@ class AuthViewModel extends ChangeNotifier {
       await Future.delayed(const Duration(milliseconds: 500));
 
       final user = _auth.currentUser;
+
       if (user != null) {
+        await Provider.of<ProfileViewModel>(context, listen: false)
+            .fetchOrCreateUser(user.uid, user.email!);
+
         _clearError();
         return true;
       } else {
@@ -56,7 +68,8 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> signup() async {
+  Future<bool> signup(BuildContext context) async {
+    _clearError();
     if (!_validateSignupForm()) return false;
 
     _setLoading(true);
@@ -71,6 +84,8 @@ class AuthViewModel extends ChangeNotifier {
 
       final user = _auth.currentUser;
       if (user != null) {
+        await Provider.of<ProfileViewModel>(context, listen: false)
+        .fetchOrCreateUser(user.uid, user.email!);
         _clearError();
         return true;
       } else {
@@ -166,5 +181,11 @@ class AuthViewModel extends ChangeNotifier {
     passwordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> logout() async {
+    await FirebaseAuth.instance.signOut();
+    localCurrentUser = null;
+    notifyListeners();
   }
 }

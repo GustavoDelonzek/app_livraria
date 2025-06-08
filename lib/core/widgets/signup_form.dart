@@ -58,7 +58,7 @@ class SignupForm extends StatelessWidget {
               onPressed: authViewModel.isLoading
                   ? null
                   : () async {
-                      bool success = await authViewModel.signup();
+                      bool success = await authViewModel.signup(context);
                      
                       if (success) {
                         Navigator.pushReplacementNamed(context, '/home');

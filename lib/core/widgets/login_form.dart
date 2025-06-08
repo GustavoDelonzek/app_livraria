@@ -50,7 +50,7 @@ class LoginForm extends StatelessWidget {
               onPressed: authViewModel.isLoading
                   ? null
                   : () async {
-                      bool success = await authViewModel.login();
+                      bool success = await authViewModel.login(context);
 
                       if (success) {
                         Navigator.pushReplacementNamed(context, '/home');
