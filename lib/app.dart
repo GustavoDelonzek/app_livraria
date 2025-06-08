@@ -8,6 +8,7 @@ import 'package:app_livraria/views/cart/cart_screen.dart';
 import 'package:app_livraria/views/cart/cart_view_model.dart';
 import 'package:app_livraria/views/profile/profile_screen.dart';
 import 'package:app_livraria/views/profile/profile_view_model.dart';
+import 'package:app_livraria/views/review/review_view_model.dart';
 import 'package:app_livraria/views/search/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'views/auth/login_view_model.dart';
@@ -32,6 +33,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthorProvider()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => ReviewViewModel())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

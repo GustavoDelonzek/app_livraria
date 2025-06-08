@@ -1,3 +1,4 @@
+import 'package:app_livraria/core/widgets/book_review_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app_livraria/core/widgets/app_header.dart';
@@ -80,51 +81,52 @@ Widget build(BuildContext context) {
                   const SizedBox(height: 16),
 
                  AnimatedCrossFade(
-  duration: const Duration(milliseconds: 300),
-  crossFadeState:
-      showFullDescription ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-  firstChild: Text(
-    description.length > 350 ? '${description.substring(0, 350)}...' : description,
-    style: const TextStyle(
-      fontSize: 16,
-      height: 1.5,
-      color: Colors.black87,
-      letterSpacing: 0.2,
-    ),
-  ),
-  secondChild: Text(
-    description,
-    style: const TextStyle(
-      fontSize: 16,
-      height: 1.5,
-      color: Colors.black87,
-      letterSpacing: 0.2,
-    ),
-  ),
-),
-if (description.length > 350)
-  Align(
-    alignment: Alignment.centerLeft,
-    child: TextButton(
-      style: TextButton.styleFrom(
-        padding: EdgeInsets.zero,
-        minimumSize: const Size(50, 30),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-      onPressed: () => setState(() {
-        showFullDescription = !showFullDescription;
-      }),
-      child: Text(
-        showFullDescription ? 'Mostrar menos' : 'Ler mais',
-        style: TextStyle(
-          fontSize: 14,
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
-      ),
-    ),
-  ),
+                  duration: const Duration(milliseconds: 300),
+                  crossFadeState:
+                      showFullDescription ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                  firstChild: Text(
+                    description.length > 350 ? '${description.substring(0, 350)}...' : description,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      height: 1.5,
+                      color: Colors.black87,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                  secondChild: Text(
+                    description,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      height: 1.5,
+                      color: Colors.black87,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                ),
+                if (description.length > 350)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: const Size(50, 30),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: () => setState(() {
+                        showFullDescription = !showFullDescription;
+                      }),
+                      child: Text(
+                        showFullDescription ? 'Mostrar menos' : 'Ler mais',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+
                   const SizedBox(height: 16),
 
                   AnimatedSwitcher(
@@ -161,6 +163,8 @@ if (description.length > 350)
                             ),
                           ),
                   ),
+                  SizedBox(height: 16),
+                  BookReviewSection(bookId: widget.book.key),
                 ],
               ),
             ),
