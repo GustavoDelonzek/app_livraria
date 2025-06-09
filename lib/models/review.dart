@@ -49,4 +49,28 @@ class Review {
       'userName': userName,
     };
   }
+
+   Review copyWith({
+    String? id,
+    String? bookId,
+    String? userId,
+    String? userName,
+    String? content,
+    int? rating,
+    DateTime? createdAt,
+    int? likeCount,
+    List<String>? likedBy,
+  }) {
+    return Review(
+      id: id ?? this.id,
+      bookId: bookId ?? this.bookId,
+      userId: userId ?? this.userId,
+      userName: userName ?? this.userName,
+      content: content ?? this.content,
+      rating: rating ?? this.rating,
+      createdAt: createdAt ?? this.createdAt,
+      likeCount: likeCount ?? this.likeCount,
+      likedBy: likedBy ?? this.likedBy,
+    );
+  }
 }

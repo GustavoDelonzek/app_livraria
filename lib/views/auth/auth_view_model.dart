@@ -1,4 +1,5 @@
 import 'package:app_livraria/models/user.dart';
+import 'package:app_livraria/providers/book_provider.dart';
 import 'package:app_livraria/views/profile/profile_view_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -185,6 +186,7 @@ class AuthViewModel extends ChangeNotifier {
 
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
+    BookProvider().setSelectedTabIndex(0);
     localCurrentUser = null;
     notifyListeners();
   }

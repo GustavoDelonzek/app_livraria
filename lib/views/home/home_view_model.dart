@@ -18,9 +18,9 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> loadAll() async {
     await Future.wait([
-      medievalProvider.fetchBooksBySubject('medieval'),
+      medievalProvider.fetchBooksBySubject('suspense'),
       romanceProvider.fetchBooksBySubject('romance'),
-      sciFiProvider.fetchBooksBySubject('science_fiction'),
+      sciFiProvider.fetchBooksBySubject('fiction'),
     ]);
     notifyListeners(); 
   }

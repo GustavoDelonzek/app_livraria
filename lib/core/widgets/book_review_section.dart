@@ -14,6 +14,9 @@ class BookReviewSection extends StatefulWidget {
 }
 
 class _BookReviewSectionState extends State<BookReviewSection> {
+  final Color primaryColor = const Color.fromRGBO(143, 179, 195, 1);
+  final Color accentColor = const Color.fromRGBO(247, 169, 182, 1);
+
   @override
   void initState() {
     super.initState();
@@ -38,21 +41,61 @@ class _BookReviewSectionState extends State<BookReviewSection> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 24),
-            const Text(
-              'Avaliações',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () {
-                showModalBottomSheet(
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.rate_review),
+                onPressed: () async {
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Você precisa estar logado para avaliar.')),
+                    );
+                    return;
+                  }
+
+                  final hasBought = await context
+                      .read<ReviewViewModel>()
+                      .hasUserBoughtBook(user.uid, widget.bookId);
+
+                  if (!hasBought) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Você só pode avaliar livros que comprou.')),
+                    );
+                    return;
+                  }
+
+                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
-                  builder: (_) => ReviewForm(bookId: widget.bookId),
+                  backgroundColor: Colors.transparent,
+                  builder: (_) => Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white, 
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: ReviewForm(bookId: widget.bookId),
+                    ),
+                  ),
                 );
-              },
-              child: const Text('Escrever uma Avaliação'),
+
+                },
+                label: const Text('Escrever uma Avaliação'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: accentColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             if (reviews.isEmpty)
@@ -65,26 +108,54 @@ class _BookReviewSectionState extends State<BookReviewSection> {
                 itemBuilder: (context, index) {
                   final review = reviews[index];
                   return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 2,
                     margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      title: Text(review.userName),
-                      subtitle: Column(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: List.generate(
-                              5,
-                              (i) => Icon(
-                                i < review.rating
-                                    ? Icons.star
-                                    : Icons.star_border,
-                                color: Colors.amber,
-                                size: 20,
-                              ),
+                          CircleAvatar(
+                            backgroundColor: primaryColor,
+                            child: Text(
+                              review.userName[0].toUpperCase(),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(review.content),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  review.userName,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: List.generate(
+                                    5,
+                                    (i) => Icon(
+                                      i < review.rating ? Icons.star : Icons.star_border,
+                                      color: Colors.amber,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  review.content,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -97,6 +168,7 @@ class _BookReviewSectionState extends State<BookReviewSection> {
     );
   }
 }
+
 
 class ReviewForm extends StatefulWidget {
   final String bookId;
@@ -111,6 +183,9 @@ class _ReviewFormState extends State<ReviewForm> {
   final _controller = TextEditingController();
   int _rating = 5;
   bool _loading = false;
+
+  final Color primaryColor = const Color.fromRGBO(143, 179, 195, 1);
+  final Color accentColor = const Color.fromRGBO(247, 169, 182, 1);
 
   void _submitReview() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -153,36 +228,90 @@ class _ReviewFormState extends State<ReviewForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: MediaQuery.of(context).viewInsets.add(const EdgeInsets.all(16)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('Avalie este livro', style: TextStyle(fontSize: 18)),
-          Slider(
-            value: _rating.toDouble(),
-            min: 1,
-            max: 5,
-            divisions: 4,
-            label: '$_rating estrelas',
-            onChanged: (value) {
-              setState(() => _rating = value.toInt());
-            },
-          ),
-          TextField(
-            controller: _controller,
-            decoration: const InputDecoration(labelText: 'Comentário'),
-            maxLines: 3,
-            enabled: !_loading,
-          ),
-          const SizedBox(height: 12),
-          ElevatedButton(
-            onPressed: _loading ? null : _submitReview,
-            child: _loading
-                ? const CircularProgressIndicator()
-                : const Text('Enviar'),
-          )
-        ],
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: primaryColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Avalie este livro',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: primaryColor,
+              ),
+            ),
+            const SizedBox(height: 16),
+            SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                activeTrackColor: accentColor,
+                inactiveTrackColor: primaryColor.withOpacity(0.3),
+                thumbColor: accentColor,
+                overlayColor: accentColor.withOpacity(0.2),
+              ),
+              child: Slider(
+                value: _rating.toDouble(),
+                min: 1,
+                max: 5,
+                divisions: 4,
+                label: '$_rating estrelas',
+                onChanged: (value) {
+                  setState(() => _rating = value.toInt());
+                },
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _controller,
+              enabled: !_loading,
+              maxLines: 4,
+              decoration: InputDecoration(
+                labelText: 'Comentário',
+                filled: true,
+                fillColor: Colors.white,
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: primaryColor),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: accentColor),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _loading ? null : _submitReview,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: accentColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: _loading
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      )
+                    : const Text(
+                        'Enviar Avaliação',
+                        style: TextStyle(fontSize: 16),
+                      ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

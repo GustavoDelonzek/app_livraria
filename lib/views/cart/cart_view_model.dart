@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:app_livraria/models/order.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:app_livraria/core/services/cart_service.dart';
 import 'package:app_livraria/models/cart_item.dart';
@@ -26,6 +29,20 @@ class CartViewModel extends ChangeNotifier {
   void dispose() {
     _cartSub.cancel();
     super.dispose();
+  }
+
+  Future<void> submitOrder() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final order = OrderUser(
+      userId: user.uid,
+      items: items,
+      total: totalPrice,
+      createdAt: DateTime.now(),
+    );
+
+    await FirebaseFirestore.instance.collection('orders').add(order.toMap());
   }
 
   Future<void> addToCart(Book book) => _cartService.addToCart(book);
